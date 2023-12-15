@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const app = document.getElementById('app');
     let currentQuestionIndex = 0;
     let score = 0;
+    let incorrectAttempts = 0;
     let questions = [];
 
     async function fetchQuestions() {
@@ -24,30 +25,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showQuestion(question) {
+        const options = shuffle([...question.incorrect_answers, question.correct_answer]).slice(0, 4);
+        options.push(question.correct_answer);
+
         app.innerHTML = `
             <h2>${question.category}</h2>
             <p>${question.question}</p>
-            <ul>
-                ${question.incorrect_answers.map(answer => `<li>${answer}</li>`).join('')}
-                <li>${question.correct_answer}</li>
-            </ul>
-            <button id="nextButton">Next Question</button>
+            <div id="options">
+                ${shuffle(options).map(answer => `<button class="option">${answer}</button>`).join('')}
+            </div>
         `;
 
-        // Adjunta el evento al botón después de la creación del HTML
-        const nextButton = document.getElementById('nextButton');
-        nextButton.addEventListener('click', () => {
-            checkAnswer(question.correct_answer);
+        // Adjunta el evento a todos los botones de respuesta
+        const optionButtons = document.querySelectorAll('#options .option');
+        optionButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                checkAnswer(button.textContent, question.correct_answer);
+            });
         });
     }
 
-    function checkAnswer(correctAnswer) {
-        const selectedAnswer = prompt('Enter your answer:'); // Puedes mejorar esto con una interfaz más interactiva
-        if (selectedAnswer && selectedAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+    function checkAnswer(selectedAnswer, correctAnswer) {
+        if (selectedAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
             score++;
             alert('Correct!');
         } else {
+            incorrectAttempts++;
             alert('Incorrect. The correct answer is: ' + correctAnswer);
+
+            if (incorrectAttempts === 4) {
+                endGame();
+                return;
+            }
         }
 
         currentQuestionIndex++;
@@ -63,6 +72,15 @@ document.addEventListener('DOMContentLoaded', () => {
             <h2>Game Over</h2>
             <p>Your final score is: ${score}</p>
         `;
+    }
+
+    // Función para mezclar aleatoriamente un array
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
     }
 
     startGame();
