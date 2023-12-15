@@ -6,12 +6,58 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f5f5f5;
+    /*background-color: #f5f5f5;*/
+    background: url(fondo.jpg);
+    background-size: cover;
+}
+/*Para el texto de la categoria*/
+#categoria{
+    display: block;
+    text-align: center;
 }
 
+/*Parte de la pregunta*/
+#pregunta{
+    display: block;
+    text-align: justify;
+}
+
+/*El div de las opciones*/
+#opciones{
+    display: block;
+}
+
+/*Parte de la respuesta*/
+#respuesta{
+    display: none;
+    text-align: center;
+    margin: 5px;
+}
+
+/*Parte del div principal, donde se contiene todo el juego*/
 #app {
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 500px;
+    /*height: 400px;*/
+}
+
+/*La clase de los botones de las opciones*/
+.option{
+    display: block;
+    margin: 10px;
+}
+
+#nextButton{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/*Parte del boton siguiente*/
+#botonSiguiente{
+    display: none;
+    margin: 5px;
 }
