@@ -1,18 +1,20 @@
-
 document.addEventListener('DOMContentLoaded', () => {
+    //Variables del juego.
     const apiUrl = 'https://opentdb.com/api.php?amount=100&category=21&difficulty=medium'; // Ajusta la URL de la API según sea necesario
-    const app = document.getElementById('app');
     let currentQuestionIndex = 0;
     let score = 0;
     let incorrectAttempts = 0;
     let questions = [];
     
+    //Variables de los IDs.
+    const app = document.getElementById('app');
     const CATEGORIA = document.getElementById("categoria");
     const PREGUNTA = document.getElementById("pregunta");
     const OPCION = document.getElementById("opciones");
     const RESPUESTA = document.getElementById("respuesta");
     const NEXT = document.getElementById("botonSiguiente");
-
+    
+    //Funcion para obtener valores del API.
     async function fetchQuestions() {
         try {
             const response = await fetch(apiUrl);
@@ -23,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    //Funcion de inicio del juego.
     async function startGame() {
         questions = await fetchQuestions();
         if (questions) {
@@ -30,15 +33,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    //Funcion donde se muestra las preguntas.
     function showQuestion(question) {
         const options = shuffle([...question.incorrect_answers, question.correct_answer]).slice(0, 4);
-        //options.push(question.correct_answer);
 
+        //Se agrega contenido a la pagina.
         CATEGORIA.innerHTML= `<h2>${question.category}</h2>`;
         PREGUNTA.innerHTML=`<p>${question.question}</p>`;
         OPCION.innerHTML=`${shuffle(options).map(answer => `<button class="option">${answer}</button>`).join('')}`;
 
-        // Adjunta el evento a todos los botones de respuesta
+        //Adjunta el evento a todos los botones de respuesta
         const optionButtons = document.querySelectorAll('#opciones .option'); //'#options .option'
         optionButtons.forEach(button => {
             button.addEventListener('click', () => {
@@ -47,10 +51,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    //Funcion para chequear las respuesta.
     function checkAnswer(selectedAnswer, correctAnswer) {
         RESPUESTA.style.display="block";
-        OPCION.disa
+        
+        //Deshabilita todos los botones de opción después de hacer clic en uno
+        const optionButtons = document.querySelectorAll('#opciones .option');
+        optionButtons.forEach(button => {
+            button.disabled = true; 
+        });
 
+        //Para donde se hace la comprobacion de la respuesta.
         if (selectedAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
             score++;
             RESPUESTA.innerHTML='Correct!😎';
@@ -72,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    //Funcion para pasar a la siguiente pregunta.
     function nextQuestion(){
         NEXT.style.display="none";
         RESPUESTA.style.display="none";
@@ -83,15 +95,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    //Funcion para finalizar el juego.
     function endGame() {
         app.innerHTML = `
             <h2>Game Over</h2>
             <p>Your final score is: ${score}</p>
         `;
-        //RESPUESTA.innerHTML= 'Incorrect. The correct answer is: ' + correctAnswer;
     }
 
-    // Función para mezclar aleatoriamente un array
+    //Función para mezclar aleatoriamente un array
     function shuffle(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
